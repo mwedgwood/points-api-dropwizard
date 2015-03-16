@@ -9,7 +9,6 @@ $ java -jar target/points-api-1.0-SNAPSHOT.jar reset-db src/main/resources/api.y
 
 ## To Run Server From Command Line:
 ```bash
-$ mvn package
 $ java -jar target/points-api-1.0-SNAPSHOT.jar server src/main/resources/api.yml
 ```
 
