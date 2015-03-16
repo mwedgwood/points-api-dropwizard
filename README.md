@@ -3,7 +3,7 @@
 ## To initialize the db:
 Must run at least once to create tables. Subsequent runs will recreate.
 ```bash
-$ mvn package
+$ mvn clean install -Dmaven.test.skip=true
 $ java -jar target/points-api-1.0-SNAPSHOT.jar reset-db src/main/resources/api.yml
 ```
 
