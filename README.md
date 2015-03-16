@@ -2,7 +2,7 @@
 
 ## To Run Server From Command Line:
 ```bash
-$ mvn clean install -Dmaven.test.skip=true
+$ mvn package
 $ java -jar target/points-api-1.0-SNAPSHOT.jar server src/main/resources/api.yml
 ```
 
