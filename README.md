@@ -12,6 +12,12 @@ http://localhost:8001
 ```
 
 ## To Test
+
+### Get list of all users
 ```bash
 $ curl http://localhost:8000/users
+```
+### Get user with id
+```bash
+$ curl http://localhost:8000/users/1
 ```
