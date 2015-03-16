@@ -29,3 +29,16 @@ $ curl -H 'CONTENT-TYPE: application/json' -d '{"name": "matt.wedgwood"}' http:/
 ```bash
 $ curl -X POST localhost:8000/users/owen.tran/memberships -d '{"program":"aadvantage","memberId":"12345678"}' -H 'CONTENT-TYPE: application/json' -i
 ```
+### List user's memberships
+```bash
+$ curl http://localhost:8000/usera/matt.wedgwood/memberships
+```
+### Test auth success
+```bash
+$ curl -H 'CONTENT-TYPE: application/json' -d '{"name": "points"}' http://localhost:8000/users
+$ curl -v -u points:letmein localhost:8000/auth/tokens
+```
+### Test auth failure
+```bash
+$ curl -v -u admin:admin localhost:8000/auth/tokens
+```
