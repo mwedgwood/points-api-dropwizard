@@ -1,5 +1,4 @@
-# How To Run The Server
-
+Solution to https://github.com/Points/goji-example
 ## To initialize the db:
 Must run at least once to create tables. Subsequent runs will recreate.
 ```bash
