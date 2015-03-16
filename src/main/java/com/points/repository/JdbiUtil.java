@@ -17,9 +17,10 @@ public class JdbiUtil {
             ");\n" +
             "\n" +
             "CREATE TABLE membership (\n" +
-            "  id      SERIAL PRIMARY KEY,\n" +
-            "  name    VARCHAR(50) NOT NULL,\n" +
-            "  user_id INT REFERENCES user(id)\n" +
+            "  id           SERIAL PRIMARY KEY,\n" +
+            "  name         VARCHAR(50) NOT NULL,\n" +
+            "  member_id    INT NOT NULL,\n" +
+            "  user_id      INT REFERENCES user(id)\n" +
             ");\n";
 
     private DBI dbi;
@@ -28,6 +29,13 @@ public class JdbiUtil {
         JdbcDataSource jdbcDataSource = new JdbcDataSource();
         jdbcDataSource.setURL("jdbc:h2:~/points_test");
         dbi = new DBI(jdbcDataSource);
+
+        resetDatabase();
+    }
+
+    private void resetDatabase() {
+        dbi.withHandle(handle -> handle.createStatement(CREATE_TABLES).execute());
+        LOGGER.info(CREATE_TABLES);
     }
 
     private static class SingletonHolder {
@@ -39,8 +47,7 @@ public class JdbiUtil {
     }
 
     public static void bootstrap() {
-        getDbi().withHandle(handle -> handle.createStatement(CREATE_TABLES).execute());
-        LOGGER.info(CREATE_TABLES);
+        SingletonHolder.INSTANCE.resetDatabase();
     }
 
 }

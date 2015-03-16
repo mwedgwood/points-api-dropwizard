@@ -1,7 +1,9 @@
 package com.points.model;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 public class User {
 
@@ -18,6 +20,7 @@ public class User {
         return this;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
@@ -28,11 +31,11 @@ public class User {
     }
 
     public Collection<Membership> getMemberships() {
-        return memberships;
+        return Collections.unmodifiableCollection(memberships);
     }
 
-    public User setMemberships(Collection<Membership> memberships) {
-        this.memberships = memberships;
+    public User addMemberships(Collection<Membership> memberships) {
+        this.memberships.addAll(memberships);
         return this;
     }
 }

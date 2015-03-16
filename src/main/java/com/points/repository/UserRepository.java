@@ -9,28 +9,47 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 
-public class JdbiUserRepository implements Repository<User> {
+public class UserRepository implements Repository<User> {
 
     private final DBI dbi;
+    private final MembershipRepository membershipRepository;
 
-    public JdbiUserRepository(DBI dbi) {
+    public UserRepository(DBI dbi) {
         this.dbi = dbi;
+        this.membershipRepository = new MembershipRepository(dbi);
+    }
+
+    public User findByName(String name) {
+        User user = dbi.withHandle(handle -> handle.createQuery("select id, name from user where name = :name")
+                .bind("name", name)
+                .map(new UserMapper())
+                .first());
+
+        return user != null ? user.addMemberships(membershipRepository.findByUserId(user.getId())) : user;
     }
 
     @Override
     public User findById(Serializable id) {
-        return dbi.withHandle(handle -> handle.createQuery("select id, name from user where id = :id")
+        User user = dbi.withHandle(handle -> handle.createQuery("select id, name from user where id = :id")
                 .bind("id", id)
                 .map(new UserMapper())
                 .first());
+
+        return user != null ? user.addMemberships(membershipRepository.findByUserId(user.getId())) : user;
     }
 
     @Override
     public Collection<User> find() {
-        return dbi.withHandle(handle -> handle.createQuery("select id, name from user")
+        List<User> users = dbi.withHandle(handle -> handle.createQuery("select id, name from user")
                 .map(new UserMapper())
                 .list());
+
+        for (User user : users) {
+            user.addMemberships(membershipRepository.findByUserId(user.getId()));
+        }
+        return users;
     }
 
     @Override
@@ -43,7 +62,7 @@ public class JdbiUserRepository implements Repository<User> {
     @Override
     public void update(User entity) {
         dbi.withHandle(handle -> handle.createStatement("update user set name = :name where id = :id")
-                .bind("naem", entity.getName())
+                .bind("name", entity.getName())
                 .bind("id", entity.getId()));
     }
 
@@ -57,17 +76,17 @@ public class JdbiUserRepository implements Repository<User> {
     public static class UserMapper extends TypedMapper<User> {
 
         @Override
-        protected User extractByName(ResultSet r, String name) throws SQLException {
+        protected User extractByName(ResultSet resultSet, String name) throws SQLException {
             return new User()
-                    .setId(r.getInt("id"))
-                    .setName(r.getString("name"));
+                    .setId(resultSet.getInt("id"))
+                    .setName(resultSet.getString("name"));
         }
 
         @Override
-        protected User extractByIndex(ResultSet r, int index) throws SQLException {
+        protected User extractByIndex(ResultSet resultSet, int index) throws SQLException {
             return new User()
-                    .setId(r.getInt(1))
-                    .setName(r.getString(2));
+                    .setId(resultSet.getInt(1))
+                    .setName(resultSet.getString(2));
         }
     }
 }
